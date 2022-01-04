@@ -4,6 +4,13 @@ CPU Design Benchmarks
 
 ## Ερώτημα 1
 
+### 1α
+
+#### Commited Instructions:
+
+Bzip: 100000001 
+
+
 # Βήμα 2
 
 ## Ερώτημα 1
@@ -187,4 +194,104 @@ Kαι το αντίστοιχο διάγραμμα:
 ![image](https://user-images.githubusercontent.com/47783647/148080503-e6d73b03-4ce1-4dd7-84db-ecd0999c1c09.png)
 
 Παρατηρούμε πως οι μικρότερες τιμές του cache line size μας δίνουν καλύτερα αποτελέσματα
+
+
+
+### Libm Benchmark
+
+#### Για διαφορετικές τιμές των L1i και L1d Cache προκύπτουν οι ακόλουθες τιμές:
+
+| Benchmarks | system.cpu.cpi | system.cpu.dcache.overall_miss_rate::total | system.cpu.icache.overall_miss_rate::total | system.l2.overall_miss_rate::total|
+| --- | --- | --- | --- | --- |
+| speclibm32_64 |	2.650301 |	0.062149 |	0.000097 |	0.973909 |
+| speclibm128_64 |	2.636110 |	0.061265 |	0.000097 |	0.993749 |
+| speclibm128_128	| 2.636124 |	0.061265 |	0.000089 |	0.993781 |
+| speclibm128_256 |	2.636124 |	0.061265 |	0.000084 |	0.993798 |
+| speclibm256_128 |	2.633358	| 0.061117 |	0.000089 |	0.997167 |
+| speclibm256_256	| 2.633358	| 0.061117	| 0.000084	| 0.997185 |
+
+
+Το διάγραμμα που προκύπτει από το CPI και το άθροισμα των L1i και L1d είναι το εξής:
+
+![image](https://user-images.githubusercontent.com/47783647/148095115-1e6b8dee-683c-41ad-8733-9cc538c3c49a.png)
+
+*Για L1 Cache Size = 384 χρησιμοποιούμε την τιμή CPI που προκύπτει από L1i = 256kB και L1d = 128kB καθώς η περίπτωση L1i = 128kB και L1d = 256kB μας δίνει το ίδιο CPI με την περίπτωση L1i = 128kB και L1d = 128kB
+
+Γενικότερα βλέπουμε πως στο συγκεκριμένο benchmark η μεταβολή του μεγέθους της L1d cache δεν έχει σχεδόν καμία επίδραση στο CPI
+
+
+
+#### Αλλάζοντας την τιμή της L2 Cache έχουμε:
+
+| Benchmarks | system.cpu.cpi | system.cpu.dcache.overall_miss_rate::total | system.cpu.icache.overall_miss_rate::total | system.l2.overall_miss_rate::total|
+| --- | --- | --- | --- | --- |
+| speclibm32_64 |	2.650301 |	0.062149 |	0.000097 |	0.973909 |
+| speclibml21024 |	2.649320 |	0.062150 |	0.000097 |	0.973615 |
+| speclibml22048	| 2.647819	| 0.062150 | 0.000097	| 0.973464 |
+| speclibml24096	| 2.644902	| 0.062151	| 0.000097	| 0.973389 |
+
+
+Kαι το αντίστοιχο διάγραμμα:
+
+![image](https://user-images.githubusercontent.com/47783647/148096197-8b916b9d-395e-4331-84b8-d2e917ee2535.png)
+
+Eδώ παρατηρούμε πως η αύξηση του μεγέθους της L2 Cache βελτιώνει σταθερά την επίδοση αλλά με πολύ μικρούς ρυθμούς
+
+
+
+#### Μεταβάλλοντας το Associativity της L1 Cache παίρνουμε τα ακόλουθα αποτελέσματα: 
+
+| Benchmarks | system.cpu.cpi | system.cpu.dcache.overall_miss_rate::total | system.cpu.icache.overall_miss_rate::total | system.l2.overall_miss_rate::total|
+| --- | --- | --- | --- | --- |
+| speclibm32_64 |	2.650301 |	0.062149 |	0.000097 |	0.973909 |
+| speclibml1assoc2 |	2.631263 |	0.060972 |	0.000088 |	0.999965 |
+| speclibml1assoc4	| 2.631263	| 0.060971	| 0.000085	| 0.999979 |
+| speclibml1assoc4_8	| 2.631263	| 0.060971	| 0.000085	| 0.999979 |
+| speclibml1assoc8_4 |	2.631263 |	0.060971 | 0.000084	| 0.999981 |
+
+
+Kαι το διάγραμμα που προκύπτει:
+
+![image](https://user-images.githubusercontent.com/47783647/148096982-ba98f6c5-f2e6-4a9b-a099-7fb2b2d847c7.png)
+
+ *Στην τιμή του CPI για associativity = 8 βάλαμε την τιμή για L1i_assoc = 8 και L1d_assoc = 4 που είναι ίδια και με την τιμή του CPI για L1i_assoc = 4 και L1d_assoc = 8
+
+Παρατηρούμε πως για L1 associativity μεγαλύτερο του 2 δεν υπάρχει καμία αλλαγή στο τελικό CPI
+
+
+
+#### Μεταβάλλοντας το Associativity της L2 Cache έχουμε:
+
+| Benchmarks | system.cpu.cpi | system.cpu.dcache.overall_miss_rate::total | system.cpu.icache.overall_miss_rate::total | system.l2.overall_miss_rate::total|
+| --- | --- | --- | --- | --- |
+| speclibm32_64 |	2.650301 |	0.062149 |	0.000097 |	0.973909 |
+| speclibml2assoc2 |	2.650259 |	0.062151 |	0.000097 |	0.973317 |
+| speclibml2assoc4 |	2.649958 |	0.062151 |	0.000097 |	0.973317 |
+| speclibml2assoc8 |	2.647551 |	0.062151 |	0.000097 |	0.973317 |
+
+
+Και το διάγραμμα είναι: 
+
+![image](https://user-images.githubusercontent.com/47783647/148097397-9cfad9e8-f6d5-4533-86cc-b346f2400968.png)
+
+Kαι πάλι παρατηρούμε πως η αλλαγή στο associativity προκαλέι πολύ μικρή μεταβολή στο CPI
+
+
+
+#### Τέλος, αλλάζοντας το cacheline_size προκύπτουν τα ακόλουθα αποτελέσματα:
+
+| Benchmarks | system.cpu.cpi | system.cpu.dcache.overall_miss_rate::total | system.cpu.icache.overall_miss_rate::total | system.l2.overall_miss_rate::total|
+| --- | --- | --- | --- | --- |
+| speclibmcls32	| 3.929894	| 0.122416	| 0.000090	| 0.994318 |
+| speclibm32_64 |	2.650301 |	0.062149 |	0.000097 |	0.973909 |
+| speclibmcls128	| 2.027656	| 0.033068	| 0.000107	| 0.896950 |
+| speclibmcls256	| 1.732841	| 0.020665	| 0.000121	| 0.678910 |
+
+Το διάγραμμα που περιγράφει τις παραπάνω τιμές: 
+
+![image](https://user-images.githubusercontent.com/47783647/148097860-51436323-4b7c-439e-bcc8-b29e6a948ccd.png)
+
+Βλέπουμε πως το CPI παρουσιάζει σημαντική μεταβολή όσο αυξάνουμε το cache line size πετυχαίνοντας καλύτερη απόδοση
+
+
 
