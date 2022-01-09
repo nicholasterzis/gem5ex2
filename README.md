@@ -4,11 +4,106 @@ CPU Design Benchmarks
 
 ## Ερώτημα 1
 
-### 1α
+|Benchmark|Commited Instructions|L1i Block Replacements|L1d Block Replacements|L1i Misses|L1d Misses|L2 Instruction Accesses|L2 Data Accesses|
+|---|---|---|---|---|---|---|---|
+|Bzip| 100000001 |302|710578|747|762039|747|711603|
+|Hmmer| 100000000 |3315|65718|3823|71884|3823|66742|
+|Libm| 100000000 |209|1486955|558|2975816|558|1487980| 
+|Mcf| 100000001| 668515| 54453|668914|75340|668914|55477|
+|Sjeng| 100000000|219|5262377|649|10523858|649|5263402|
 
-#### Commited Instructions:
+Σε κάθε benchmark η προσομοίωση σταματάει γιατί φτάνουμε τον ορισμένο μέγιστο αριθμό από instructions γι'αυτό και τα νούμερα που προκύπτουν είναι ίδια. Ο αριθμός των commited instructions μπορεί να είναι μικρότερος από αυτόν των executed instructions στην περίπτωση που υπάρξει πρόβλημα κατά την εκτέλεση μιας εντολής όπως εμφάνιση exception κατά την εκτέλεση ενός load/store (πχ store buffer overload που θα οδηγούσε σε abort του store), κάτι που θα σταματήσει το CPU από το να κάνει commit/retire το συγκεκριμένο instruction είτε δηλώνοντας το exception είτε προσπαθώνοας να το διορθώσει και να επαναλάβει την εντολή. Παρατηρούμε πως τα accesses στην L2 cache είναι κοντά στα misses της L1 και ειδικά στο κομμάτι των instructions είναι ακριβώς ο ίδιος αριθμός. Τα miss στην L1 είναι πάντα περισσότερα από τα accesses της L2 σε ότι αφορά το κομμάτι των δεδομένων, πιθανώς επειδή χρησιμοποιείται ένας buffer που κρατάει τα δεδομένα που προέκυψαν από το access στην L2 χωρίς να τα κάνει store στην L1 με αποτέλεσμα σε επόμενες φορές που ζητάμε δεδομένα που βρίσκονται στην ίδια θέση μνήμης να έχουμε miss της L1 και να παίρνουμε τα δεδομένα κατευθείαν από τον συγκεκριμένο buffer χωρίς να απαιτείται η πρόσβαση στην L2. 
 
-Bzip: 100000001 
+
+## Ερώτημα 2
+
+ |Benchmark| Simulation Seconds|CPI| L1i Miss Rate| L1d Miss Rate| L2 Miss Rate|
+ |---|---|---|---|---|---|
+ |Bzip|0.109754|1.645488|0.000077|0.014785|0.282160|
+ |Hmmer|0.079149|1.186641|0.000221|0.001637|0.077758|
+ |Libm| 0.205034|3.073968|0.000094|0.060972|0.999944|
+ |Mcf|0.086162|1.291785|0.023621| 0.002108|0.055046|
+ |Sjeng|0.581937|8.724686|0.000020|0.121831|0.999972|
+
+### Simulation Seconds
+
+
+![image](https://user-images.githubusercontent.com/47783647/148683288-c0d0bfc3-624d-4f46-9694-ebb3c44acedd.png)
+
+
+### CPI
+
+
+![image](https://user-images.githubusercontent.com/47783647/148683402-3f7415f9-45b5-4a10-8e65-449b0ddf2a50.png)
+
+
+### L1i Miss Rate
+
+
+![image](https://user-images.githubusercontent.com/47783647/148684119-79d411cc-3c28-4356-b18f-07d05542fc9d.png)
+
+
+### L1d Miss Rate
+
+
+![image](https://user-images.githubusercontent.com/47783647/148684172-9eabb8b8-dcd9-4d5e-8f5a-ae8ce659bc69.png)
+
+
+## L2 Miss Rate
+
+
+![image](https://user-images.githubusercontent.com/47783647/148684211-94370db6-c3a2-4189-af3f-6383e5540b00.png)
+
+
+Παρατηρούμε πάρα πολύ υψηλό miss rate στα Libm και Sjeng κάτι που σίγουρα επηρρεάζει και το CPI του επεξεργαστή στα δύο benchmarks όπως φαίνεται και παραπάνω
+
+
+## Ερώτημα 3
+
+ |Benchmark| Simulation Seconds|CPI| L1i Miss Rate| L1d Miss Rate| L2 Miss Rate|
+ |---|---|---|---|---|---|
+ |Bzip|0.083982|1.679650|0.000077|0.014798|0.282163|
+ |Hmmer|0.059396|1.187917|0.000221|0.001637|0.077760|
+ |Libm|0.17467|3.493415|0.000094|0.060972|0.999944|
+ |Mcf|0.064955|1.299095|0.023612|0.002108|0.055046|
+ |Sjeng|0.513528|10.270554|0.000020|0.121831|0.999972|
+
+Με την αλλαγή του clock speed παρατηρούμε μείωση του χρόνου εκτέλεσης και μικρή αύξηση του CPI (μεγαλύτερη μεταβολή στα Libm και ιδίως στο Sjeng που έχουν και υψηλότερες τιμές CPI). Τα miss rates παραμένουν σχεδόνα αναλλοίωτα παρουσιάζοντας μία αμελητέα μεταβολή τις περισσότερες φορές. 
+
+
+
+### Simulation Seconds
+
+
+![image](https://user-images.githubusercontent.com/47783647/148684887-d7f010c5-a1be-49dd-8195-b320532aeb90.png)
+
+
+### CPI
+
+
+![image](https://user-images.githubusercontent.com/47783647/148684925-5f0d2d0b-6263-410f-8485-e91644c8d88d.png)
+
+
+### L1i Miss Rate
+
+
+![image](https://user-images.githubusercontent.com/47783647/148684966-9491fbbe-63c9-4f7d-ac6f-5293f8a6af41.png)
+
+
+### L1d Miss Rate
+
+
+![image](https://user-images.githubusercontent.com/47783647/148685040-b2aad31b-ca4f-45b1-8529-0a69abfa4b34.png)
+
+
+## L2 Miss Rate
+
+
+![Uploading image.png…]()
+
+
+Και στις δύο περιπτώσεις για όλα τα benchmark το system.clk_domain.clock έχει την τιμή των 1000 ticks/clock period που μας δίνει την περίοδο του λεγόμενου system clock που αντιπροσωπεύει το ρολόι που συγχρονίζει όλα τα κομμάτια του συστήματος. Αντίθετα το cpu_cluster.clk_domain.clock παίρνει τιμές ανάλογα με τη συχνότητα που θα ορίσουμε εμείς στον επεξεργαστή μας καθώς αυτή η τιμή εκφράζει την περίοδο του CPU clock που κάνει το ίδιο πράγμα με το system clock αλλά μόνο επάνω στο chip του CPU. Έτσι στην περίπτωση που ορίσουμε το ρολόι αυτό στα 1.5GHz (default τιμή) έχουμε 667 ticks/clock period και στην περίπτωση που το ορίσουμε στα 2 GHz έχουμε 500 ticks/clock period. Εάν προσθέταμε άλλον έναν επεξεργαστή θα είχαμε και πάλι το ίδιο system clock και το ρολόι του επεξεργαστή θα έπερνε την default τιμή του (ανάλογα με τον τύπο επεξργαστή πχ σε minorCPU θα ήταν 1.5GHz) εκτός κι αν εμείς το ορίζαμε διαφορετικά. Τέλος, παρατηρούμε πως η μεταβολή του χρόνου 
+
 
 
 # Βήμα 2
@@ -293,5 +388,10 @@ Kαι πάλι παρατηρούμε πως η αλλαγή στο associativit
 
 Βλέπουμε πως το CPI παρουσιάζει σημαντική μεταβολή όσο αυξάνουμε το cache line size πετυχαίνοντας καλύτερη απόδοση
 
-
-
+http://learning.gem5.org/book/part1/gem5_stats.html
+https://stackoverflow.com/questions/39670026/out-of-order-instruction-execution-is-commit-order-preserved
+https://www.gem5.org/documentation/general_docs/cpu_models/minor_cpu
+https://www.realworldtech.com/haswell-tm-alt/2/
+https://stackoverflow.com/questions/8475118/when-l1-misses-are-a-lot-different-than-l2-accesses-tlb-related
+https://cs.stackexchange.com/questions/32149/what-are-system-clock-and-cpu-clock-and-what-are-their-functions
+https://www.bbc.co.uk/bitesize/guides/zr8kt39/revision/5
