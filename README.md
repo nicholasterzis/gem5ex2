@@ -392,6 +392,81 @@ Kαι πάλι παρατηρούμε πως η αλλαγή στο associativit
 
 Σε ότι αφορά το μέγεθος των cache βλέπουμε πως και πάλι η επίδοση εξαρτάται από το μέγεθος της L1i cache κυρίως ενώ η μεταβολή του μεγέθους της L2 οδηγεί σε βελτίωση αλλά με πολύ μικρούς ρυθμούς. Η αύξηση του associativity της L1 cache από 1 σε 2 προκαλεί βελτίωση της επίδοσης αλλά η περαιτέρω αύξηση σε τιμές μεγαλύτερες του 2 δεν φαίνεται να έχει κάποιο αποτέλεσμα. Η αύξηση του associativity της L2 cache επίσης οδηγεί σε καλύτερες επιδόσεις αλλά η βελτίωση είναι και πάλι πολύ περιορισμένη. Τέλος, σημαντικά καλύτερη επίδοση παρατηρείται για μεγαλύτερες τιμές του cache line size οπότε ιδανικά θα επιλέγαμε τη χρήση cache line size 256 από τις επιλογές που δοκιμάσαμε.   
 
+# Bήμα 3
+
+Θεωρήσαμε μια αυθαίρετη συνάρτηση κόστους το κανονικοποιημένο (ως προς τη μέγιστη τιμή) γινόμενο assocativity, memory cost, size και cache line size με τον ακόλουθο τρόπο:
+
+(L1Size * L1Cost * L1Associativity + L2Size * L2Cost * L2Associativity) * CacheLineSize, όπου L2Cost = 1/10 * L1Cost και L1Size = Size/512, L1Associativity = L1Assoc/8, και αντίστοιχα L2Size = Size/4096, L2Associativity = L2Assoc/8 και τέλος CacheLineSize = CLS/256. 
+
+Η σχέση για το κόστος της L1 ως προς την L2 προέκυψε από τον διαφορετικό σχεδιασμό των δύο μνημών παρά το γεγονός πως πρόκειται για μνήμες τύπου SRAM η πρώτη είναι σχεδιασμένη για αυξημένη ταχύτητα ενώ η δεύτερη για καλύτερη απόδοση σε μεγαλύτερα μεγέθη με αποτέλεσμα να έχει και χαμηλότερο κόστος ανά MB. Ορίζουμε μια τιμή Value = (Cost * CPI) ^ (-1). Έτσι για τα benchmarks έχουμε:
+
+## Bzip Benchmark
+
+### Προφανώς και τα αποτελέσματα θα είναι γραμμικά. Συγκεκριμένα για αύξηση του μεγέθους της μνήμης L1 έχουμε
+
+#### Cost
+ 
+![image](https://user-images.githubusercontent.com/47783647/150354121-1fabe0f3-2589-4ec7-b144-e03bbe9c188c.png)
+
+
+
+#### Η σχέση Value με το μέγεθος της L1 Cache
+
+![image](https://user-images.githubusercontent.com/47783647/150355343-738360f8-3700-49bd-ab83-92d006439394.png)
+
+
+### Για αύξηση του μεγέθους της L2:
+
+#### Cost
+
+![image](https://user-images.githubusercontent.com/47783647/150356006-a83de148-99c0-4c99-8aec-5bc121add699.png)
+
+
+#### Η σχέση Value με το μέγεθος της L2 Cache
+
+![image](https://user-images.githubusercontent.com/47783647/150356577-1e66c02a-dcd4-425c-a3d5-a7b3a9a1f143.png)
+
+
+### Για διαφορετικές τιμές του Associativity της L1
+
+#### Cost
+
+![image](https://user-images.githubusercontent.com/47783647/150357494-1db8e83b-455a-44a4-b1e7-55a7e0415b28.png)
+
+
+#### Η σχέση Value με το associativity της L1 Cache
+
+![image](https://user-images.githubusercontent.com/47783647/150357880-67314b29-618f-4394-9161-0e127030df84.png)
+
+
+### Για διαφορετικές τιμές του Associativity της L2
+
+#### Cost
+
+![image](https://user-images.githubusercontent.com/47783647/150358519-5e9fe030-b07f-4e6c-90c2-b525c696d6be.png)
+
+
+#### Η σχέση Value με το associativity της L1 Cache
+
+![image](https://user-images.githubusercontent.com/47783647/150358788-13dd1474-89ec-4a06-a3da-1e9b0c47c8ed.png)
+
+
+### Τέλος για το cache line size έχουμε
+
+#### Cost
+
+![image](https://user-images.githubusercontent.com/47783647/150359239-62570e59-9baf-4b9c-bbd1-5d77759f3cfc.png)
+
+
+#### Η σχέση Value με το cache line size
+
+![image](https://user-images.githubusercontent.com/47783647/150359349-ef9ad65c-851c-4388-ace5-8291a7c5dd71.png)
+
+
+Παρατηρούμε σταθερά πως με την συνάρτηση κόστους ορισμένη με αυτόν τον τρόπο το καλύτερο value το παίρνουμε για μικρότερες τιμές τόσο του Associativity όσο και του μεγέθους των μνημών, ενώ το cache line size φαίνεται να μην κάνει αρκετά μεγάλη διαφορά με την αύξησή του για να δικαιολογήσει την αύξηση στο κόστος.
+
+
+
 # Βιβλιογραφία
 
 http://learning.gem5.org/book/part1/gem5_stats.html
