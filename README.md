@@ -584,7 +584,10 @@ Kαι το αντίστοιχο διάγραμμα:
 
 (L1Size * L1Cost * L1Associativity + L2Size * L2Cost * L2Associativity) * CacheLineSize, όπου L2Cost = 1/10 * L1Cost και L1Size = Size/512, L1Associativity = L1Assoc/8, και αντίστοιχα L2Size = Size/4096, L2Associativity = L2Assoc/8 και τέλος CacheLineSize = CLS/256. 
 
-Η σχέση για το κόστος της L1 ως προς την L2 προέκυψε από τον διαφορετικό σχεδιασμό των δύο μνημών παρά το γεγονός πως πρόκειται για μνήμες τύπου SRAM η πρώτη είναι σχεδιασμένη για αυξημένη ταχύτητα ενώ η δεύτερη για καλύτερη απόδοση σε μεγαλύτερα μεγέθη με αποτέλεσμα να έχει και χαμηλότερο κόστος ανά MB. Ορίζουμε μια τιμή Value = (Cost * CPI) ^ (-1). Έτσι για τα benchmarks έχουμε:
+Η σχέση για το κόστος της L1 ως προς την L2 προέκυψε από τον διαφορετικό σχεδιασμό των δύο μνημών παρά το γεγονός πως πρόκειται για μνήμες τύπου SRAM η πρώτη είναι σχεδιασμένη για αυξημένη ταχύτητα ενώ η δεύτερη για καλύτερη απόδοση σε μεγαλύτερα μεγέθη με αποτέλεσμα να έχει και χαμηλότερο κόστος ανά MB. Ορίζουμε μια τιμή Value = (Cost * CPI) ^ (-1).
+Πρακτικά, σε κάθε benchmark το κόστος είναι ίδιο αλλά παραθέτουμε τα διαγράμματα έτσι ώστε να φαίνετια καλύτερα η σχέση ανάμεσα σε κόστος, cpi κσι value. 
+Έτσι για τα benchmarks έχουμε:
+
 
 ## Bzip Benchmark
 
@@ -697,7 +700,7 @@ Kαι το αντίστοιχο διάγραμμα:
 
 #### Η σχέση Value με το associativity της L2 Cache
 
-![image](https://user-images.githubusercontent.com/47783647/150358788-13dd1474-89ec-4a06-a3da-1e9b0c47c8ed.png)
+![image](https://user-images.githubusercontent.com/47783647/151357312-9fbf909b-aecd-48ba-8112-791329094aad.png)
 
 
 ### Τέλος για το cache line size έχουμε
@@ -709,18 +712,201 @@ Kαι το αντίστοιχο διάγραμμα:
 
 #### Η σχέση Value με το cache line size
 
-![image](https://user-images.githubusercontent.com/47783647/150359349-ef9ad65c-851c-4388-ace5-8291a7c5dd71.png)
+![image](https://user-images.githubusercontent.com/47783647/151358135-323cc594-036e-4246-96de-495d7c964cc9.png)
 
 
-Παρατηρούμε σταθερά πως με την συνάρτηση κόστους ορισμένη με αυτόν τον τρόπο το καλύτερο value το παίρνουμε για μικρότερες τιμές τόσο του Associativity όσο και του μεγέθους των μνημών, ενώ το cache line size φαίνεται να μην κάνει αρκετά μεγάλη διαφορά με την αύξησή του για να δικαιολογήσει την αύξηση στο κόστος.
+## Libm Benchmark
+
+### Για αύξηση του μεγέθους της μνήμης L1 έχουμε
+
+#### Cost
+ 
+![image](https://user-images.githubusercontent.com/47783647/150354121-1fabe0f3-2589-4ec7-b144-e03bbe9c188c.png)
 
 
-assoc2 
-hmmer
-![image](https://user-images.githubusercontent.com/47783647/151357312-9fbf909b-aecd-48ba-8112-791329094aad.png)
-libm
+#### Η σχέση Value με το μέγεθος της L1 Cache
+
+![image](https://user-images.githubusercontent.com/47783647/151360067-d57e6a75-eb5b-4635-9c2f-764a2608d61e.png)
+
+
+### Για αύξηση του μεγέθους της L2:
+
+#### Cost
+
+![image](https://user-images.githubusercontent.com/47783647/150356006-a83de148-99c0-4c99-8aec-5bc121add699.png)
+
+
+#### Η σχέση Value με το μέγεθος της L2 Cache
+
+![image](https://user-images.githubusercontent.com/47783647/151359437-57df720c-d013-4159-83b0-9e352b62b1ba.png)
+
+
+### Για διαφορετικές τιμές του Associativity της L1
+
+#### Cost
+
+![image](https://user-images.githubusercontent.com/47783647/150357494-1db8e83b-455a-44a4-b1e7-55a7e0415b28.png)
+
+
+#### Η σχέση Value με το associativity της L1 Cache
+
+![image](https://user-images.githubusercontent.com/47783647/151358898-16e29a94-bb4c-4c13-8284-6c17db043798.png)
+
+
+### Για διαφορετικές τιμές του Associativity της L2
+
+#### Cost
+
+![image](https://user-images.githubusercontent.com/47783647/150358519-5e9fe030-b07f-4e6c-90c2-b525c696d6be.png)
+
+
+#### Η σχέση Value με το associativity της L2 Cache
+
 ![image](https://user-images.githubusercontent.com/47783647/151357475-6d7af394-af81-4e78-a4a9-e4e0d235e71c.png)
-mcf
+
+
+### Τέλος για το cache line size έχουμε
+
+#### Cost
+
+![image](https://user-images.githubusercontent.com/47783647/150359239-62570e59-9baf-4b9c-bbd1-5d77759f3cfc.png)
+
+
+#### Η σχέση Value με το cache line size
+
+![image](https://user-images.githubusercontent.com/47783647/151358272-6efb60e6-46cc-43d1-a127-9182d22d958b.png)
+
+
+
+
+## Mcf Benchmark
+
+### Για αύξηση του μεγέθους της μνήμης L1 έχουμε
+
+#### Cost
+ 
+![image](https://user-images.githubusercontent.com/47783647/150354121-1fabe0f3-2589-4ec7-b144-e03bbe9c188c.png)
+
+
+#### Η σχέση Value με το μέγεθος της L1 Cache
+
+![image](https://user-images.githubusercontent.com/47783647/151360190-21322c01-1286-4a13-be2c-40c1b5655fa7.png)
+
+
+### Για αύξηση του μεγέθους της L2:
+
+#### Cost
+
+![image](https://user-images.githubusercontent.com/47783647/150356006-a83de148-99c0-4c99-8aec-5bc121add699.png)
+
+
+#### Η σχέση Value με το μέγεθος της L2 Cache
+
+![image](https://user-images.githubusercontent.com/47783647/151359712-ed1f1ebb-4bcb-4163-9be5-33fdd63ce494.png)
+
+
+### Για διαφορετικές τιμές του Associativity της L1
+
+#### Cost
+
+![image](https://user-images.githubusercontent.com/47783647/150357494-1db8e83b-455a-44a4-b1e7-55a7e0415b28.png)
+
+
+#### Η σχέση Value με το associativity της L1 Cache
+
+![image](https://user-images.githubusercontent.com/47783647/151359027-48ab246f-a2e3-4545-9320-003ab4fdd664.png)
+
+
+### Για διαφορετικές τιμές του Associativity της L2
+
+#### Cost
+
+![image](https://user-images.githubusercontent.com/47783647/150358519-5e9fe030-b07f-4e6c-90c2-b525c696d6be.png)
+
+
+#### Η σχέση Value με το associativity της L2 Cache
+
+![image](https://user-images.githubusercontent.com/47783647/151357692-1ab7b166-ee23-4a3d-8942-e43068531a24.png)
+
+
+### Τέλος για το cache line size έχουμε
+
+#### Cost
+
+![image](https://user-images.githubusercontent.com/47783647/150359239-62570e59-9baf-4b9c-bbd1-5d77759f3cfc.png)
+
+
+#### Η σχέση Value με το cache line size
+
+![image](https://user-images.githubusercontent.com/47783647/151358430-278a539a-a491-4527-b703-af0c51617e5f.png)
+
+
+
+
+## Sjeng Benchmark
+
+### Για αύξηση του μεγέθους της μνήμης L1 έχουμε
+
+#### Cost
+ 
+![image](https://user-images.githubusercontent.com/47783647/150354121-1fabe0f3-2589-4ec7-b144-e03bbe9c188c.png)
+
+
+#### Η σχέση Value με το μέγεθος της L1 Cache
+
+![image](https://user-images.githubusercontent.com/47783647/151360290-9aaecc0e-01bc-4344-ac4f-6e7fea56e207.png)
+
+
+### Για αύξηση του μεγέθους της L2:
+
+#### Cost
+
+![image](https://user-images.githubusercontent.com/47783647/150356006-a83de148-99c0-4c99-8aec-5bc121add699.png)
+
+
+#### Η σχέση Value με το μέγεθος της L2 Cache
+
+![image](https://user-images.githubusercontent.com/47783647/151359847-b52a5dc4-e83a-4c3c-8bfa-6559ec947bb6.png)
+
+
+### Για διαφορετικές τιμές του Associativity της L1
+
+#### Cost
+
+![image](https://user-images.githubusercontent.com/47783647/150357494-1db8e83b-455a-44a4-b1e7-55a7e0415b28.png)
+
+
+#### Η σχέση Value με το associativity της L1 Cache
+
+![image](https://user-images.githubusercontent.com/47783647/151359169-467ad7bf-48c2-4981-bf70-e5ca25ced97c.png)
+
+
+### Για διαφορετικές τιμές του Associativity της L2
+
+#### Cost
+
+![image](https://user-images.githubusercontent.com/47783647/150358519-5e9fe030-b07f-4e6c-90c2-b525c696d6be.png)
+
+
+#### Η σχέση Value με το associativity της L2 Cache
+
+![image](https://user-images.githubusercontent.com/47783647/151357894-5104c078-ae6e-4fcd-b456-cf0081634540.png)
+
+
+### Τέλος για το cache line size έχουμε
+
+#### Cost
+
+![image](https://user-images.githubusercontent.com/47783647/150359239-62570e59-9baf-4b9c-bbd1-5d77759f3cfc.png)
+
+
+#### Η σχέση Value με το cache line size
+
+![image](https://user-images.githubusercontent.com/47783647/151358599-0713fd07-44ba-4015-ae44-16fdbcfdd2fd.png)
+
+
+
+
 
 # Βιβλιογραφία
 
