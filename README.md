@@ -392,6 +392,192 @@ Kαι πάλι παρατηρούμε πως η αλλαγή στο associativit
 
 Σε ότι αφορά το μέγεθος των cache βλέπουμε πως και πάλι η επίδοση εξαρτάται από το μέγεθος της L1i cache κυρίως ενώ η μεταβολή του μεγέθους της L2 οδηγεί σε βελτίωση αλλά με πολύ μικρούς ρυθμούς. Η αύξηση του associativity της L1 cache από 1 σε 2 προκαλεί βελτίωση της επίδοσης αλλά η περαιτέρω αύξηση σε τιμές μεγαλύτερες του 2 δεν φαίνεται να έχει κάποιο αποτέλεσμα. Η αύξηση του associativity της L2 cache επίσης οδηγεί σε καλύτερες επιδόσεις αλλά η βελτίωση είναι και πάλι πολύ περιορισμένη. Τέλος, σημαντικά καλύτερη επίδοση παρατηρείται για μεγαλύτερες τιμές του cache line size οπότε ιδανικά θα επιλέγαμε τη χρήση cache line size 256 από τις επιλογές που δοκιμάσαμε.   
 
+
+
+### Mcf Benchmark
+
+#### Για διαφορετικές τιμές των L1i και L1d Cache προκύπτουν οι ακόλουθες τιμές:
+
+| Benchmarks | system.cpu.cpi | system.cpu.dcache.overall_miss_rate::total | system.cpu.icache.overall_miss_rate::total | system.l2.overall_miss_rate::total|
+| --- | --- | --- | --- | --- |
+|specmcf32_64|	1.178558	|0.006983|	0.000042|	0.224871|
+|specmcf128_64|	1.146475|	0.002399|	0.000042	|0.757073|
+|specmcf128_128	|1.146439|	0.002399|	0.000018|	0.764245|
+|specmcf128_256|1.146439	|0.002399	|0.000018|	0.764329|
+|specmcf256_128	|1.144024|	0.002091|	0.000018|	0.856499|
+|specmcf256_256|	1.144024|	0.002091	|0.000018|	0.856607|
+
+Το διάγραμμα που προκύπτει από το CPI και το άθροισμα των L1i και L1d είναι το εξής:
+
+![image](https://user-images.githubusercontent.com/47783647/151349636-e99b87db-f5e9-48ff-ab46-06b50561cba4.png)
+
+
+*Για L1 Cache Size = 384 χρησιμοποιούμε την τιμή CPI που προκύπτει από L1i = 256kB και L1d = 128kB καθώς η περίπτωση L1i = 128kB και L1d = 256kB μας δίνει το ίδιο CPI με την περίπτωση L1i = 128kB και L1d = 128kB
+
+
+
+#### Αλλάζοντας την τιμή της L2 Cache έχουμε:
+
+| Benchmarks | system.cpu.cpi | system.cpu.dcache.overall_miss_rate::total | system.cpu.icache.overall_miss_rate::total | system.l2.overall_miss_rate::total|
+| --- | --- | --- | --- | --- |
+|specmcf32_64|	1.178558	|0.006983|	0.000042|	0.224871|
+|specmcfl21024|	1.175090|	0.006982	|0.000042|	0.207246|
+|specmcfl22048|	1.173013|	0.006982	|0.000042|	0.197012|
+|specmcfl24096|	1.170265|	0.006982	|0.000042	|0.181911|
+
+
+Kαι το αντίστοιχο διάγραμμα:
+
+![image](https://user-images.githubusercontent.com/47783647/151350094-0910eab0-2410-4db8-9b68-9ade0a9d765d.png)
+
+
+
+#### Μεταβάλλοντας το Associativity της L1 Cache παίρνουμε τα ακόλουθα αποτελέσματα: 
+
+| Benchmarks | system.cpu.cpi | system.cpu.dcache.overall_miss_rate::total | system.cpu.icache.overall_miss_rate::total | system.l2.overall_miss_rate::total|
+| --- | --- | --- | --- | --- |
+|specmcf32_64|	1.178558	|0.006983|	0.000042|	0.224871|
+|specmcfl1assoc2|	1.146392|	0.002493|	0.000018|	0.738945|
+|specmcfl1assoc4|	1.145636|	0.002345|	0.000018|	0.803553|
+|specmcfl1assoc4_8|	1.145636|	0.002345|	0.000018|	0.803553|
+|specmcfl1assoc8_4|	1.145533	|0.002309|	0.000018|	0.804771|
+
+
+Kαι το διάγραμμα που προκύπτει:
+
+![image](https://user-images.githubusercontent.com/47783647/151350466-237587f4-6393-4f61-b94f-d47e2e572161.png)
+
+ *Στην τιμή του CPI για associativity = 8 βάλαμε την τιμή για L1i_assoc = 8 και L1d_assoc = 4  αν και η επίδραση που έχει η αλλαγή είναι πολύ μικρή γιατί για την περίπτωση L1i_assoc = 4 και L1d_assoc = 8 βλέπουμε πως το CPI δεν αλλάζει καθόλου
+
+
+
+#### Μεταβάλλοντας το Associativity της L2 Cache έχουμε:
+
+| Benchmarks | system.cpu.cpi | system.cpu.dcache.overall_miss_rate::total | system.cpu.icache.overall_miss_rate::total | system.l2.overall_miss_rate::total|
+| --- | --- | --- | --- | --- |
+|specmcf32_64|	1.178558	|0.006983|	0.000042|	0.224871|
+|specmcfl2assoc2|	1.176616|	0.006983|	0.000042|	0.214748|
+|specmcfl2assoc4	|1.176176|	0.006983|	0.000042|	0.212559|
+|specmcfl2assoc8	|1.176050|	0.006983|	0.000042|	0.212257|
+
+
+Kαι το αντίστοιχο διάγραμμα:
+
+![image](https://user-images.githubusercontent.com/47783647/151350758-1210f653-04f9-4048-bc54-5651383a251b.png)
+
+Όπως βλέπουμε και η αλλαγή του associativity για την L2 Cache δεν έχει και πάλι σχεδόν καμία επίδραση στο CPI.
+
+
+
+#### Τέλος, αλλάζοντας το cacheline_size προκύπτουν τα ακόλουθα αποτελέσματα:
+
+| Benchmarks | system.cpu.cpi | system.cpu.dcache.overall_miss_rate::total | system.cpu.icache.overall_miss_rate::total | system.l2.overall_miss_rate::total|
+| --- | --- | --- | --- | --- |
+|specmcfcls32|	1.191632|	0.007979|	0.000048|	0.353152|
+|specmcf32_64|	1.178558|	|0.006983|	0.000042|	0.224871|
+|specmcfcls128|	1.159466|	0.006827|	0.000034|	0.133749|
+|specmcfcls256|	1.218669|	0.016365|	0.000033|	0.034143|
+
+Το διάγραμμα που περιγράφει τις παραπάνω τιμές: 
+
+![image](https://user-images.githubusercontent.com/47783647/151351287-cb2053bc-b15f-4c82-a7fb-82df3a01c7b0.png)
+
+
+Παρατηρούμε πως για άλλη μια φορά το πιο καθοριστικό από τα μεγέθη των cache είναι το μέγεθος της L1i ενώ τα μεγέθη των L1d και L2 δεν συμβάλουν στην βελτίωση του CPI. Αντίστοιχα, παρατηρούμε μια μικρή βελτίωση του CPI με την αύξηση του associativity της L1 από 1 σε 2 ενώ η περαιτέρω αύξηση δεν οδηγεί και σε περαιτέρω βελτίωση του CPI, ενώ κανέναν ρόλο δεν φαίνεται να παίζει το associativity της L2. Τέλος, παρατηρούμε πως το ιδανικό cache line size για το συγκεκριμένο benchmark είναι 128 ενώ η επιπλέον αύξησή του οδηγεί σε χεριτότερα αποτελέσματα. 
+
+
+### Sjeng Benchmark
+
+#### Για διαφορετικές τιμές των L1i και L1d Cache προκύπτουν οι ακόλουθες τιμές:
+
+| Benchmarks | system.cpu.cpi | system.cpu.dcache.overall_miss_rate::total | system.cpu.icache.overall_miss_rate::total | system.l2.overall_miss_rate::total|
+| --- | --- | --- | --- | --- |
+|specsjeng32_64|	7.061255|	0.122441|	0.000020|	0.990082|
+|specsjeng128_64|	7.060422|	0.122368|	0.000020|	0.991257|
+|specsjeng128_128	|7.060383|	0.122368|	0.000019|	0.991262|
+|specsjeng128_256	|7.060399|	0.122368|	0.000019|	0.991264|
+|specsjeng256_128	|7.061122|	0.122365|	0.000019	|0.991297|
+|specsjeng256_256	|7.060973|	0.122365|	0.000019|	0.991299|
+
+Το διάγραμμα που προκύπτει από το CPI και το άθροισμα των L1i και L1d είναι το εξής:
+
+![image](https://user-images.githubusercontent.com/47783647/151352742-094149d0-f338-41ba-9466-311bf54422fd.png)
+
+
+*Για L1 Cache Size = 384 χρησιμοποιούμε την τιμή CPI που προκύπτει από L1i = 256kB και L1d = 128kB καθώς η περίπτωση L1i = 128kB και L1d = 256kB μας δίνει το ίδιο ακριβώς CPI με την περίπτωση L1i = 128kB και L1d = 128kB
+
+
+
+#### Αλλάζοντας την τιμή της L2 Cache έχουμε:
+
+| Benchmarks | system.cpu.cpi | system.cpu.dcache.overall_miss_rate::total | system.cpu.icache.overall_miss_rate::total | system.l2.overall_miss_rate::total|
+| --- | --- | --- | --- | --- |
+|specsjeng32_64|	7.061255|	0.122441|	0.000020|	0.990082|
+|specsjengl21024|	7.060841|	0.122441|	0.000020|	0.990080|
+|specsjengl22048|	7.060022|	0.122441|	0.000020|0.990080|
+|specsjengl24096|7.058356|	0.122441|	0.000020|	0.990080|
+
+
+
+Kαι το αντίστοιχο διάγραμμα:
+
+![image](https://user-images.githubusercontent.com/47783647/151352996-afe3c496-ed18-4bbe-bbe9-4fa4c272fd3c.png)
+
+
+#### Μεταβάλλοντας το Associativity της L1 Cache παίρνουμε τα ακόλουθα αποτελέσματα: 
+
+| Benchmarks | system.cpu.cpi | system.cpu.dcache.overall_miss_rate::total | system.cpu.icache.overall_miss_rate::total | system.l2.overall_miss_rate::total|
+| --- | --- | --- | --- | --- |
+|specsjeng32_64|	7.061255|	0.122441|	0.000020|	0.990082|
+|specsjengl1assoc2|	7.041155|	0.121833	|0.000019	|0.999956|
+|specsjengl1assoc4|	7.041150|	0.121831	|0.000019	|0.999983|
+|specsjengl1assoc4_8|	7.041150|	0.121831|	0.000019|	|0.999983|
+|specsjengl1assoc8_4|	7.041167|	0.121831|	0.000019|	0.999983|
+
+
+Kαι το διάγραμμα που προκύπτει:
+
+![image](https://user-images.githubusercontent.com/47783647/151353482-81e1011f-8ee6-4889-8b59-e3af85eae16d.png)
+
+
+ *Στην τιμή του CPI για associativity = 8 βάλαμε και πάλι την τιμή για L1i_assoc = 8 και L1d_assoc = 4  αν και η επίδραση που έχει η αλλαγή είναι πολύ μικρή γιατί για την περίπτωση L1i_assoc = 4 και L1d_assoc = 8 βλέπουμε πως το CPI δεν αλλάζει καθόλου
+
+
+
+#### Μεταβάλλοντας το Associativity της L2 Cache έχουμε:
+
+| Benchmarks | system.cpu.cpi | system.cpu.dcache.overall_miss_rate::total | system.cpu.icache.overall_miss_rate::total | system.l2.overall_miss_rate::total|
+| --- | --- | --- | --- | --- |
+|specsjeng32_64|	7.061255|	0.122441|	0.000020|	0.990082|
+|specsjengl2assoc2|	7.061276|	0.122441|	0.000020|	0.990081|
+|specsjengl2assoc4|	7.061374|	0.122441|	0.000020|	0.990080|
+|specsjengl2assoc8|	7.060628|	0.122441|	0.000020|	0.990080|
+
+
+Kαι το αντίστοιχο διάγραμμα:
+
+![image](https://user-images.githubusercontent.com/47783647/151353787-ae71c84a-c1b8-4bf8-a0d0-c892e29a54f0.png)
+
+
+
+#### Τέλος, αλλάζοντας το cacheline_size προκύπτουν τα ακόλουθα αποτελέσματα:
+
+| Benchmarks | system.cpu.cpi | system.cpu.dcache.overall_miss_rate::total | system.cpu.icache.overall_miss_rate::total | system.l2.overall_miss_rate::total|
+| --- | --- | --- | --- | --- |
+|specsjengcls32	|11.669733	|0.243970|	0.000023	|0.997409|
+|specsjeng32_64|	7.061255|	0.122441|	0.000020|	0.990082|
+|specsjengcls128|	5.016282|	0.062105	|0.000014	|0.962524|
+|specsjengcls256|	3.795405|	0.032772	|0.000011	|0.868407|
+
+Το διάγραμμα που περιγράφει τις παραπάνω τιμές: 
+
+![image](https://user-images.githubusercontent.com/47783647/151354149-62884a05-21a9-420d-bce8-e64fffb81291.png)
+
+Εδώ παρατηρούμε σημαντική μεταβολή με την αύξηση του cache line size
+
+Σε αντίθεση με τα προηγούμενα benchmarks το sjeng φαίνεται να μας δίνει επιδόσεις που σχετίζονται περισσότερο με το cache line size, η αύξηση του οποίου οδηγεί σε σημανική μείωση του cpi ενώ όλες οι υπόλοιπες παράμετροι φαίνεται να μην επηρεάζουν το τελικό αποτέλεσμα.
+
+
 # Bήμα 3
 
 Θεωρήσαμε μια αυθαίρετη συνάρτηση κόστους το κανονικοποιημένο (ως προς τη μέγιστη τιμή) γινόμενο assocativity, memory cost, size και cache line size με τον ακόλουθο τρόπο:
@@ -407,7 +593,6 @@ Kαι πάλι παρατηρούμε πως η αλλαγή στο associativit
 #### Cost
  
 ![image](https://user-images.githubusercontent.com/47783647/150354121-1fabe0f3-2589-4ec7-b144-e03bbe9c188c.png)
-
 
 
 #### Η σχέση Value με το μέγεθος της L1 Cache
@@ -446,7 +631,7 @@ Kαι πάλι παρατηρούμε πως η αλλαγή στο associativit
 ![image](https://user-images.githubusercontent.com/47783647/150358519-5e9fe030-b07f-4e6c-90c2-b525c696d6be.png)
 
 
-#### Η σχέση Value με το associativity της L1 Cache
+#### Η σχέση Value με το associativity της L2 Cache
 
 ![image](https://user-images.githubusercontent.com/47783647/150358788-13dd1474-89ec-4a06-a3da-1e9b0c47c8ed.png)
 
@@ -466,6 +651,76 @@ Kαι πάλι παρατηρούμε πως η αλλαγή στο associativit
 Παρατηρούμε σταθερά πως με την συνάρτηση κόστους ορισμένη με αυτόν τον τρόπο το καλύτερο value το παίρνουμε για μικρότερες τιμές τόσο του Associativity όσο και του μεγέθους των μνημών, ενώ το cache line size φαίνεται να μην κάνει αρκετά μεγάλη διαφορά με την αύξησή του για να δικαιολογήσει την αύξηση στο κόστος.
 
 
+
+## Hmmer Benchmark
+
+### Για αύξηση του μεγέθους της μνήμης L1 έχουμε
+
+#### Cost
+ 
+![image](https://user-images.githubusercontent.com/47783647/150354121-1fabe0f3-2589-4ec7-b144-e03bbe9c188c.png)
+
+
+#### Η σχέση Value με το μέγεθος της L1 Cache
+
+![image](https://user-images.githubusercontent.com/47783647/151356071-59c40ea0-2325-4cc4-a5b3-60161dc9c850.png)
+
+### Για αύξηση του μεγέθους της L2:
+
+#### Cost
+
+![image](https://user-images.githubusercontent.com/47783647/150356006-a83de148-99c0-4c99-8aec-5bc121add699.png)
+
+
+#### Η σχέση Value με το μέγεθος της L2 Cache
+
+![image](https://user-images.githubusercontent.com/47783647/151356313-7a56ed9e-cf43-4bfd-a44e-d7949324ebdd.png)
+
+### Για διαφορετικές τιμές του Associativity της L1
+
+#### Cost
+
+![image](https://user-images.githubusercontent.com/47783647/150357494-1db8e83b-455a-44a4-b1e7-55a7e0415b28.png)
+
+
+#### Η σχέση Value με το associativity της L1 Cache
+
+![image](https://user-images.githubusercontent.com/47783647/151356771-2cfa542a-c4ba-44f6-856a-311b8611fe4f.png)
+
+
+### Για διαφορετικές τιμές του Associativity της L2
+
+#### Cost
+
+![image](https://user-images.githubusercontent.com/47783647/150358519-5e9fe030-b07f-4e6c-90c2-b525c696d6be.png)
+
+
+#### Η σχέση Value με το associativity της L2 Cache
+
+![image](https://user-images.githubusercontent.com/47783647/150358788-13dd1474-89ec-4a06-a3da-1e9b0c47c8ed.png)
+
+
+### Τέλος για το cache line size έχουμε
+
+#### Cost
+
+![image](https://user-images.githubusercontent.com/47783647/150359239-62570e59-9baf-4b9c-bbd1-5d77759f3cfc.png)
+
+
+#### Η σχέση Value με το cache line size
+
+![image](https://user-images.githubusercontent.com/47783647/150359349-ef9ad65c-851c-4388-ace5-8291a7c5dd71.png)
+
+
+Παρατηρούμε σταθερά πως με την συνάρτηση κόστους ορισμένη με αυτόν τον τρόπο το καλύτερο value το παίρνουμε για μικρότερες τιμές τόσο του Associativity όσο και του μεγέθους των μνημών, ενώ το cache line size φαίνεται να μην κάνει αρκετά μεγάλη διαφορά με την αύξησή του για να δικαιολογήσει την αύξηση στο κόστος.
+
+
+assoc2 
+hmmer
+![image](https://user-images.githubusercontent.com/47783647/151357312-9fbf909b-aecd-48ba-8112-791329094aad.png)
+libm
+![image](https://user-images.githubusercontent.com/47783647/151357475-6d7af394-af81-4e78-a4a9-e4e0d235e71c.png)
+mcf
 
 # Βιβλιογραφία
 
